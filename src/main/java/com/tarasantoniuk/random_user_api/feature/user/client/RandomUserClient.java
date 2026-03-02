@@ -1,5 +1,6 @@
 package com.tarasantoniuk.random_user_api.feature.user.client;
 
+import com.tarasantoniuk.random_user_api.feature.user.dto.UserResponseDto;
 import com.tarasantoniuk.random_user_api.feature.user.exception.ExternalApiException;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -18,16 +19,19 @@ public class RandomUserClient {
     @Value("${randomuser.base-url}")
     private String baseUrl;
 
-    public RandomUserClient(RestClient.Builder builder) {
-        this.restClient = builder.build();
+    public RandomUserClient(RestClient.Builder builder,
+                            @Value("${randomuser.base-url}") String baseUrl) {
+        this.restClient = builder
+                .baseUrl(baseUrl)
+                .build();
     }
 
-    public String getUsers() {
+    public UserResponseDto getUsers(int count) {
         try {
             return restClient.get()
-                    .uri(baseUrl + "/api/?results=50")
+                    .uri("/api/?results={count}", count)
                     .retrieve()
-                    .body(String.class);
+                    .body(UserResponseDto.class);
         } catch (HttpClientErrorException ex) {
             log.error("External API client error: {}",  ex.getMessage());
             throw new ExternalApiException(ex.getStatusCode().value(), "External API client error");
