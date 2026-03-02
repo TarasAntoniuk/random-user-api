@@ -1,7 +1,10 @@
 package com.tarasantoniuk.random_user_api.feature.user.client;
 
+import com.tarasantoniuk.random_user_api.common.exception.ExternalApiUnavailableException;
 import com.tarasantoniuk.random_user_api.feature.user.dto.UserResponseDto;
 import com.tarasantoniuk.random_user_api.feature.user.exception.ExternalApiException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +42,8 @@ public class RandomUserClient {
 
     }
 
+    @Retry(name = "randomUserApi")
+    @CircuitBreaker(name = "randomUserApi", fallbackMethod = "getUsersFallback")
     public UserResponseDto getUsers(int count) {
         try {
             return restClient.get()
@@ -57,4 +62,10 @@ public class RandomUserClient {
         }
 
     }
+
+    private UserResponseDto getUsersFallback(int count, Exception ex) {
+        log.warn("External API unavailable: {}", ex.getMessage());
+        throw new ExternalApiUnavailableException("Random User API is currently unavailable");
+    }
+
 }
