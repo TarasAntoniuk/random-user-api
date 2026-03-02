@@ -14,7 +14,7 @@ public class RandomUserClient {
 
     private final RestClient restClient;
 
-    private final Logger log = LoggerFactory.getLogger(RandomUserClient.class);
+    private final static Logger log = LoggerFactory.getLogger(RandomUserClient.class);
 
     @Value("${randomuser.base-url}")
     private String baseUrl;
