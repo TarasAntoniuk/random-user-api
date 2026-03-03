@@ -3,6 +3,7 @@ package com.tarasantoniuk.random_user_api.common.exception;
 import com.tarasantoniuk.random_user_api.common.dto.ErrorResponse;
 import com.tarasantoniuk.random_user_api.feature.user.exception.ExternalApiException;
 
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(503, "External API is currently unavailable"));
     }
 
+
+
     @ExceptionHandler(HttpClientErrorException.class)
     public ResponseEntity<ErrorResponse> handleHttpClientError(HttpClientErrorException ex) {
         log.warn("External API client error: {}", ex.getMessage());
@@ -46,6 +49,13 @@ public class GlobalExceptionHandler {
         log.warn("Validation error: {}", ex.getMessage());
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(400, ex.getMessage()));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+        log.warn("Constraint violation: {}", ex.getMessage());
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(400, "Invalid request parameter"));
     }
 
     @ExceptionHandler(Exception.class)
