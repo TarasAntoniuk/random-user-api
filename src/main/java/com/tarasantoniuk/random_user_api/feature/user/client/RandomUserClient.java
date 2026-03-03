@@ -22,7 +22,7 @@ public class RandomUserClient {
 
     private final RestClient restClient;
 
-    private final static Logger log = LoggerFactory.getLogger(RandomUserClient.class);
+    private static final Logger log = LoggerFactory.getLogger(RandomUserClient.class);
 
     public RandomUserClient(RestClient.Builder builder,
                             @Value("${randomuser.base-url}") String baseUrl,
