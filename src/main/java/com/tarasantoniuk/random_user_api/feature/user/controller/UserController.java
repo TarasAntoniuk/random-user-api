@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +37,7 @@ public class UserController {
     @ApiResponse(responseCode = "503", description = "External API unavailable",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     public ResponseEntity<UserResponseDto> getUsers(
-            @RequestParam(defaultValue = "50") int count
+            @RequestParam(defaultValue = "50") @Min(1) int count
     ) {
         UserResponseDto users = userService.getUsers(count);
         return ResponseEntity.ok().body(users);
