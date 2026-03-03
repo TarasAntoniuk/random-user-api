@@ -11,7 +11,7 @@ public class UserService {
     private final RandomUserClient randomUserClient;
     /**
      * Maximum number of users per single request to randomuser.me API.
-     *
+     * <p>
      * TODO: Validate default value (5000) based on:
      * - Actual request patterns and typical user demands
      * - API rate limits and response times
@@ -28,7 +28,7 @@ public class UserService {
 
     public UserResponseDto getUsers(int count) {
         if (count < 1 || count > maxCount) {
-            throw new IllegalArgumentException("count must be between 1 and 5000");
+            throw new IllegalArgumentException("count must be between 1 and " + maxCount);
         }
         return randomUserClient.getUsers(count);
     }
