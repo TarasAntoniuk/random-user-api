@@ -3,7 +3,6 @@ package com.tarasantoniuk.random_user_api.feature.user.service;
 
 import com.tarasantoniuk.random_user_api.feature.user.client.RandomUserClient;
 import com.tarasantoniuk.random_user_api.feature.user.dto.UserResponseDto;
-import com.tarasantoniuk.random_user_api.feature.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 

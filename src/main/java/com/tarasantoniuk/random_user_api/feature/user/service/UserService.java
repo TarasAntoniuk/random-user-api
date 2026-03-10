@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -61,6 +62,31 @@ public class UserService {
         genderData.put("male", male);
         genderData.put("female", female);
 
+
+        return genderData;
+    }
+
+    public Map<String, List<UserDataDto>> getGenderDataImproved(int count) {
+
+        if (count < 1 || count > maxCount) {
+            throw new IllegalArgumentException("count must be between 1 and " + maxCount);
+        }
+
+        List<UserDto> originalUsers = randomUserClient.getUsers(count).results();
+
+        Map<String, List<UserDataDto>> genderData;
+        genderData = originalUsers.stream()
+                .collect(Collectors.groupingBy(
+                                UserDto::gender,
+                                Collectors.mapping(
+                                        userDto -> new UserDataDto(
+                                                userDto.email(),
+                                                userDto.location().country()
+                                        ),
+                                        Collectors.toList()
+                                )
+                        )
+                );
 
         return genderData;
     }
