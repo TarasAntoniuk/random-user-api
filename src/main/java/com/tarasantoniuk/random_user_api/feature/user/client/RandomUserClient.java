@@ -25,17 +25,20 @@ public class RandomUserClient {
         this.restClient = restClient;
     }
 
-    @Retry(name = "randomUserApi")
+
     @CircuitBreaker(name = "randomUserApi", fallbackMethod = "getUsersFallback")
+    @Retry(name = "randomUserApi")
     public UserResponseDto getUsers(int count) {
         try {
             return restClient.get()
-                    .uri("/api/?results={count}", count)
+                    .uri(
+                            uriBuilder -> uriBuilder
+                                    .path("api")
+                                    .queryParam("results", count)
+                                    .build()
+                    )
                     .retrieve()
                     .body(UserResponseDto.class);
-//      } catch (HttpClientErrorException ex) {
-//            log.error("External API client error: {}",  ex.getMessage());
-//            throw new ExternalApiException(ex.getStatusCode().value(), "External API client error");
         } catch (HttpServerErrorException ex) {
             log.error("External API server error: {}",  ex.getMessage());
             throw new ExternalApiException(502, "External API server error");
