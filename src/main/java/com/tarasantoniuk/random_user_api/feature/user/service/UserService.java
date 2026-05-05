@@ -61,8 +61,6 @@ public class UserService {
 
         genderData.put("male", male);
         genderData.put("female", female);
-
-
         return genderData;
     }
 
@@ -74,21 +72,13 @@ public class UserService {
 
         List<UserDto> originalUsers = randomUserClient.getUsers(count).results();
 
-        Map<String, List<UserDataDto>> genderData;
-        genderData = originalUsers.stream()
-                .collect(Collectors.groupingBy(
-                                UserDto::gender,
-                                Collectors.mapping(
-                                        userDto -> new UserDataDto(
-                                                userDto.email(),
-                                                userDto.location().country()
-                                        ),
-                                        Collectors.toList()
-                                )
+        return originalUsers.stream()
+                .collect(Collectors.groupingBy(UserDto::gender,
+                        Collectors.mapping(
+                                userDto -> new UserDataDto(userDto.email(), userDto.location().country())
+                                , Collectors.toList())
                         )
                 );
-
-        return genderData;
     }
 
 }
